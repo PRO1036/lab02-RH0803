@@ -1,7 +1,7 @@
----
+ ---
 title: "Lab 02 - Plastic waste"
-author: "Votre nom"
-date: "La date"
+author: "Rym Hajji"
+date: "22 septembre, 2025"
 output: github_document
 ---
 
@@ -22,65 +22,122 @@ plastic_waste <- plastic_waste %>%
   filter(plastic_waste_per_cap < 3.5)
 ```
 
-
 ## Exercices
 
 ### Exercise 1
 
 ```{r plastic-waste-continent}
-# insert code here
+ggplot(plastic_waste, aes(x = plastic_waste_per_cap)) +
+  geom_histogram(bins = 4) + 
+         facet_wrap(~ continent, ncol = 3) +
+labs(x = "Déchets plastiques par habitant",
+     y = "count",
+    title = "Distribution de déchets plastiques par continent")
 ```
 
 ### Exercise 2
 
 ```{r plastic-waste-density}
-# insert code here
+ggplot(plastic_waste, aes(x = plastic_waste_per_cap)) +
+      geom_density(adjust = 1)
 ```
 
-Réponse à la question...
+```{r}
+ggplot(plastic_waste, aes(x = plastic_waste_per_cap, color = continent)) +
+  geom_density(adjust = 1, alpha = 0.5) +
+  labs(
+    x = "plastic_waste_per_cap",
+    y = "Density",
+    title = "Quantité de déchets plastiques par habitant en kg/jour",
+    color = "Continent")
+```
+
+```{r}
+ggplot(plastic_waste, aes(x = plastic_waste_per_cap, 
+                          fill = continent,
+                          color = continent)) +
+  geom_density(adjust = 1, 
+               alpha = 0.4) +
+  labs(
+    x = "plastic_waste_per_cap",
+    y = "Density",
+    title = "Quantité de déchets plastiques par habitant en kg/jour",
+    fill = "continent", 
+    color = "Continent")
+```
+
+QUESTION 2: color & fill, Ce trouve dans aes car ces actions sont liées au dataset.alpha, Ce trouve dans geom_density car cela controle le graphique en un ensemble, peut importe les valeurs.
+
 
 ### Exercise 3
 
 Boxplot:
 
 ```{r plastic-waste-boxplot}
-# insert code here
+ggplot(plastic_waste, aes(x = continent,
+                          y = plastic_waste_per_cap)) +
+  geom_boxplot() + 
+  labs(x = "continent",
+       y = "plastic_was_per_cap",
+       title = "Quantité de déchets plastiques par habitant en kg/jour")
 ```
 
 Violin plot:
 
 ```{r plastic-waste-violin}
-# insert code here
+ggplot(plastic_waste, aes(x = continent,
+                          y = plastic_waste_per_cap)) +
+  geom_violin() +
+  labs(title = "Quantité de déchets plastiques par habitant en kg/jour")
 ```
 
-Réponse à la question...
+QUESTION 3: Le violon plot permet de voir en plus de detail la distribution des données. Par exemple, l'Asie a un bas de violon plus large que le haut, ce qui signifie que la majorité de sa population on peu de dechets mais que certain en ont beaucoup. Le box plot indique unniquement qu'il y a, en Asie (parmis sa population), quelques-uns qui ont  beaucoup de dechets et d'autre 
+qui en ont peu, mais pas sa distribution. 
 
 ### Exercise 4
 
-
 ```{r plastic-waste-mismanaged}
-# insert code here
+ggplot(plastic_waste, aes(x = mismanaged_plastic_waste_per_cap, 
+                          y =plastic_waste_per_cap,
+                          color = continent)) +
+geom_point() +
+  labs(title = "Relation entre la quantité de déchets plastiques gérés et non gérés par habitant")
 ```
 
-Réponse à la question...
+QUESTION 4: relation, Corelation plus ou moins positive, où plus il y a de déchets plastiques, plus qu'ils seront mal gérés. Par example, lÀfrique suit bien cette relation. 
+tendance, Par contre, la couleur permet de voir que cette relation n'est pas parfaitement linéaire. Certains pays de l'Asie produisent beacoup de déchet mais s'en occupe bien, alors que d'autres produisent peu et sont mal gérés. 
 
 ### Exercise 5
 
-
 ```{r plastic-waste-population-total}
-# insert code here
+ggplot(plastic_waste, aes(x = total_pop,
+                          y = plastic_waste_per_cap,
+                          color = continent)) +
+  geom_boxplot() +
+  labs(title = "Graph 1")
 ```
 
 ```{r plastic-waste-population-coastal}
-# insert code here
+ggplot(plastic_waste, aes(x = coastal_pop,
+                          y = plastic_waste_per_cap,
+                          color = continent)) +
+  geom_boxplot()+
+  labs(title = "Graph 2")
 ```
 
-Réponse à la question...
+QUESTION 5:Il y a une relation plus forte entre la quantité de déchets plastiques par habitant et le nombre total d’habitants vivant près d’une côte. Le graph indique une petite tendance, puisque les données de Graph 2 sont plus regroupés (se disperse et varie moins) que dans graph 1. 
 
 ## Conclusion
 
 Recréez la visualisation:
 
 ```{r recreate-viz}
-# insert code here
+ggplot(plastic_waste_coastal <- plastic_waste %>% 
+  mutate(coastal_pop_prop = coastal_pop / total_pop) %>%
+  filter(plastic_waste_per_cap < 3), 
+  
+  aes(x = coastal_pop,
+      y = plastic_waste_per_cap,
+      color = continent)) +
+  geom_smooth()
 ```
